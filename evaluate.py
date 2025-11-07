@@ -37,7 +37,6 @@ def main(
     def evaluate(
             instruction,
             input=None,
-            do_sample=True,
             temperature=0.1,
             top_p=0.75,
             top_k=40,
@@ -49,6 +48,7 @@ def main(
         inputs = tokenizer(prompt, return_tensors="pt")
         input_ids = inputs["input_ids"].to(device)
         generation_config = GenerationConfig(
+            do_sample=True,
             temperature=temperature,
             top_p=top_p,
             top_k=top_k,
