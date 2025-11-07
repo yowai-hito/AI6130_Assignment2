@@ -90,7 +90,9 @@ def main(
         epoch = ""
     if args.ftdataset:
         ftdataset = f"-ft{args.ftdataset}"
-    save_file = f'experiment/{args.model}-{args.adapter}-{args.dataset}{args.epoch}{args.ftdataset}.json'
+    else:
+        ftdataset = ""
+    save_file = f'experiment/{args.model}-{args.adapter}-{args.dataset}{epoch}{ftdataset}.json'
     create_dir('experiment/')
 
     dataset = load_data(args)
