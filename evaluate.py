@@ -84,7 +84,13 @@ def main(
         print("Response:", evaluate(instruction))
         print()
     """
-    save_file = f'experiment/{args.model}-{args.adapter}-{args.dataset}.json'
+    if args.epoch:
+        epoch = f"-E{args.epoch}"
+    else:
+        epoch = ""
+    if args.ftdataset:
+        ftdataset = f"-ft{args.ftdataset}"
+    save_file = f'experiment/{args.model}-{args.adapter}-{args.dataset}{args.epoch}{args.ftdataset}.json'
     create_dir('experiment/')
 
     dataset = load_data(args)
@@ -186,6 +192,10 @@ def parse_args():
     parser.add_argument('--base_model', required=True)
     parser.add_argument('--lora_weights', required=True)
     parser.add_argument('--load_8bit', action='store_true', default=False)
+    parser.add_argument('--ftdataset', default = False, required=False)
+    parser.add_argument('--epoch', default = False, required=False)
+
+
 
     return parser.parse_args()
 
