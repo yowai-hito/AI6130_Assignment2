@@ -37,7 +37,7 @@ def main(
     def evaluate(
             instruction,
             input=None,
-            do_sample=True
+            do_sample=True,
             temperature=0.1,
             top_p=0.75,
             top_k=40,
