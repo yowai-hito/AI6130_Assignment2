@@ -93,7 +93,11 @@ def main(
         ftdataset = f"-ft{args.ftdataset}"
     else:
         ftdataset = ""
-    save_file = f'experiment/{args.base_model}-{args.adapter}-{args.dataset}{epoch}{ftdataset}.json'
+    if args.modelname:
+        mdlname = f"-ft{args.modelname}"
+    else:
+        mdlname = ""
+    save_file = f'experiment/{mdlname}-{args.adapter}-{args.dataset}{epoch}{ftdataset}.json'
     create_dir('experiment/')
 
     dataset = load_data(args)
@@ -197,8 +201,7 @@ def parse_args():
     parser.add_argument('--load_8bit', action='store_true', default=False)
     parser.add_argument('--ftdataset', default = False, required=False)
     parser.add_argument('--epoch', default = False, required=False)
-
-
+    parser.add_argument('--modelname', default = False, required=False)
 
     return parser.parse_args()
 
