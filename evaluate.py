@@ -94,7 +94,7 @@ def main(
     else:
         ftdataset = ""
     if args.modelname:
-        mdlname = f"-ft{args.modelname}"
+        mdlname = f"{args.modelname}"
     else:
         mdlname = ""
     save_file = f'experiment/{mdlname}-{args.adapter}-{args.dataset}{epoch}{ftdataset}.json'
