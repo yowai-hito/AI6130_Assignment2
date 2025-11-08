@@ -138,14 +138,14 @@ def main(
         print('label:', label)
         print('---------------')
         print(f'\rtest:{idx + 1}/{total} | accuracy {correct}  {correct / (idx + 1)}')
-        with open(save_file_results, "w+") as save_file_results: 
-            save_file_results.write("\n")
-            save_file_results.write("---------------\n")
-            save_file_results.write(outputs)
-            save_file_results.write(f"prediction: {predict}\n")
-            save_file_results.write(f"label: {label}\n")
-            save_file_results.write("---------------\n")
-            save_file_results.write(f"test:{idx + 1}/{total} | accuracy {correct}  {correct / (idx + 1)}\n")
+        with open(save_file_results, "w+") as f: 
+            f.write("\n")
+            f.write("---------------\n")
+            f.write(outputs)
+            f.write(f"prediction: {predict}\n")
+            f.write(f"label: {label}\n")
+            f.write("---------------\n")
+            f.write(f"test:{idx + 1}/{total} | accuracy {correct}  {correct / (idx + 1)}\n")
         with open(save_file, 'w+') as f:
             json.dump(output_data, f, indent=4)
         pbar.update(1)
