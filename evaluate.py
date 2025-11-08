@@ -97,7 +97,8 @@ def main(
         mdlname = f"{args.modelname}"
     else:
         mdlname = ""
-    save_file = f'experiment/{mdlname}-{args.adapter}-{args.dataset}{epoch}{ftdataset}'
+    save_file = f'experiment/{mdlname}-{args.adapter}-{args.dataset}{epoch}{ftdataset}.json'
+    save_file_results = f'experiment/{mdlname}-{args.adapter}-{args.dataset}{epoch}{ftdataset}_results.txt'
     create_dir('experiment/')
 
     dataset = load_data(args)
@@ -137,14 +138,15 @@ def main(
         print('label:', label)
         print('---------------')
         print(f'\rtest:{idx + 1}/{total} | accuracy {correct}  {correct / (idx + 1)}')
-        with open(save_file + "_results.txt", "w+") as save_file: 
-            save_file.write("\n")
-            save_file.write("---------------\n")
-            save_file.write(f"prediction: {predict}\n")
-            save_file.write(f"label: {label}\n")
-            save_file.write("---------------\n")
-            save_file.write(f"test:{idx + 1}/{total} | accuracy {correct}  {correct / (idx + 1)}\n")
-        with open(save_file + '.json', 'w+') as f:
+        with open(save_file_results, "w+") as save_file_results: 
+            save_file_results.write("\n")
+            save_file_results.write("---------------\n")
+            save_file_results.write(outputs)
+            save_file_results.write(f"prediction: {predict}\n")
+            save_file_results.write(f"label: {label}\n")
+            save_file_results.write("---------------\n")
+            save_file_results.write(f"test:{idx + 1}/{total} | accuracy {correct}  {correct / (idx + 1)}\n")
+        with open(save_file, 'w+') as f:
             json.dump(output_data, f, indent=4)
         pbar.update(1)
     pbar.close()
