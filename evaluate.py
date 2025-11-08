@@ -131,6 +131,16 @@ def main(
         new_data['pred'] = predict
         new_data['flag'] = flag
         output_data.append(new_data)
+        with open(save_file_results, "a") as res:
+            res.write("\n")
+            res.write("---------------\n")
+            res.write(str(outputs) + "\n")
+            res.write(f"prediction: {predict}\n")
+            res.write(f"label: {label}\n")
+            res.write("---------------\n")
+            res.write(f"test:{idx + 1}/{total} | accuracy {correct}  {correct / (idx + 1)}\n")
+        with open(save_file, 'w+') as f:
+            json.dump(output_data, f, indent=4)
         print(' ')
         print('---------------')
         print(outputs)
@@ -138,16 +148,6 @@ def main(
         print('label:', label)
         print('---------------')
         print(f'\rtest:{idx + 1}/{total} | accuracy {correct}  {correct / (idx + 1)}')
-        with open(save_file_results, "w+") as f: 
-            f.write("\n")
-            f.write("---------------\n")
-            f.write(outputs)
-            f.write(f"prediction: {predict}\n")
-            f.write(f"label: {label}\n")
-            f.write("---------------\n")
-            f.write(f"test:{idx + 1}/{total} | accuracy {correct}  {correct / (idx + 1)}\n")
-        with open(save_file, 'w+') as f:
-            json.dump(output_data, f, indent=4)
         pbar.update(1)
     pbar.close()
     print('\n')
