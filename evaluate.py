@@ -5,8 +5,6 @@ import re
 import sys
 import argparse
 
-import fire
-
 import torch
 
 sys.path.append(os.path.join(os.getcwd(), "peft/src/"))
@@ -24,16 +22,10 @@ try:
         device = "mps"
 except:  # noqa: E722
     pass
+sys.stdout.reconfigure(encoding='utf-8')
 
-
-def main(
-        load_8bit: bool = False,
-        base_model: str = "",
-        lora_weights: str = "tloen/alpaca-lora-7b",
-        share_gradio: bool = False,
-):
+def main():
     args = parse_args()
-
     def evaluate(
             instruction,
             input=None,
@@ -101,7 +93,7 @@ def main(
     save_file_results = f'experiment/{mdlname}-{args.adapter}-{args.dataset}{epoch}{ftdataset}_results.txt'
     create_dir('experiment/')
 
-    dataset = load_data(args)
+    dataset = load_data(args.dataset)
     tokenizer, model = load_model(args)
     total = len(dataset)
     correct = 0
@@ -131,7 +123,7 @@ def main(
         new_data['pred'] = predict
         new_data['flag'] = flag
         output_data.append(new_data)
-        with open(save_file_results, "a") as res:
+        with open(save_file_results, "a", encoding="utf-8") as res:
             res.write("\n")
             res.write("---------------\n")
             res.write(str(outputs) + "\n")
@@ -141,24 +133,17 @@ def main(
             res.write(f"test:{idx + 1}/{total} | accuracy {correct}  {correct / (idx + 1)}\n")
         with open(save_file, 'w+') as f:
             json.dump(output_data, f, indent=4)
-        print(' ')
-        print('---------------')
-        print(outputs)
-        print('prediction:', predict)
-        print('label:', label)
-        print('---------------')
-        print(f'\rtest:{idx + 1}/{total} | accuracy {correct}  {correct / (idx + 1)}')
         pbar.update(1)
     pbar.close()
     print('\n')
     print('test finished')
+    return
 
 
 def create_dir(dir_path):
     if not os.path.exists(dir_path):
         os.mkdir(dir_path)
     return
-
 
 def generate_prompt(instruction, input=None):
     if input:
@@ -182,7 +167,7 @@ def generate_prompt(instruction, input=None):
                 """  # noqa: E501
 
 
-def load_data(args) -> list:
+def load_data(dataset) -> list:
     """
     read data from dataset file
     Args:
@@ -191,7 +176,7 @@ def load_data(args) -> list:
     Returns:
 
     """
-    file_path = f'dataset/{args.dataset}/test.json'
+    file_path = f'dataset/{dataset}/test.json'
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"can not find dataset file : {file_path}")
     json_data = json.load(open(file_path, 'r'))
@@ -203,8 +188,8 @@ def parse_args():
     parser.add_argument('--dataset', choices=['AddSub', 'MultiArith', 'SingleEq', 'gsm8k', 'AQuA', 'SVAMP'],
                         required=True)
     parser.add_argument('--model', choices=['LLaMA-7B', 'BLOOM-7B', 'GPT-j-6B'], default="")
-    parser.add_argument('--adapter', choices=['LoRA', 'AdapterP', 'AdapterH', 'Parallel', 'Prefix'],
-                        required=True)
+    parser.add_argument('--adapter', choices=['LoRA', 'AdapterP', 'AdapterH', 'Parallel', 'Prefix'], 
+                        default='LoRA', required=False)
     parser.add_argument('--base_model', required=True)
     parser.add_argument('--lora_weights', required=True)
     parser.add_argument('--load_8bit', action='store_true', default=False)
@@ -218,7 +203,7 @@ def parse_args():
 def load_model(args) -> tuple:
     """
     load tuned model
-    Args:
+    args:
         args:
 
     Returns:
@@ -226,7 +211,7 @@ def load_model(args) -> tuple:
     """
     base_model = args.base_model
     if not base_model:
-        raise ValueError(f'can not find base model name by the value: {args.model}')
+        raise ValueError(f'can not find base model name by the value: {args.base_model}')
     lora_weights = args.lora_weights
     if not lora_weights:
         raise ValueError(f'can not find lora weight, the value is: {lora_weights}')
@@ -324,4 +309,4 @@ def extract_answer_letter(args, sentence: str) -> str:
 
 
 if __name__ == "__main__":
-    fire.Fire(main)
+    main()
